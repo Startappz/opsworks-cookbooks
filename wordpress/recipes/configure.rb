@@ -27,7 +27,8 @@ node[:deploy].each do |application, deploy|
 
   deploy = node[:deploy][application]
 
-  template "#{deploy[:deploy_to]}/current/wp-config.php" do
+  #template "#{deploy[:deploy_to]}/current/wp-config.php" do
+  template "#{deploy[:deploy_to]}/shared/config/wp-config.php" do
     source "wp-config.php.erb"
     mode 0660
     group deploy[:group]
