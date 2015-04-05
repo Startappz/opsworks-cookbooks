@@ -1,0 +1,14 @@
+/**
+ * The default template for the home controller. Set the api_url to the correct
+ * path.
+ *
+ */
+var Home = {
+  index: function (req, res) {
+    res.render("index" , {
+      "api_url" : "<%= @api_url %>"
+    });
+  }
+}
+
+module.exports = Home;
