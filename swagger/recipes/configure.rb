@@ -4,7 +4,7 @@
 node[:deploy].each do |application, deploy|
   Chef::Log.info("Configuring Swagger app #{application}...")
 
-  if defined?(deploy[:application_type]) && deploy[:application_type] != 'node'                                        
+  if defined?(deploy[:application_type]) && deploy[:application_type] != 'nodejs'                                        
     Chef::Log.debug("Skipping Swagger Configure  application #{application} as it is not defined as node")
     next                                                                       
   end
