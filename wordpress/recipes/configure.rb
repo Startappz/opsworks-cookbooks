@@ -18,6 +18,9 @@ node[:deploy].each do |application, deploy|
     owner deploy[:user]
 
     variables(
+      # URI
+      :home_url   => (deploy[:home_url] rescue nil),
+      :site_url   => (deploy[:site_url] rescue nil),
       # database
       :database   => (deploy[:database][:database] rescue nil),
       :user       => (deploy[:database][:username] rescue nil),
