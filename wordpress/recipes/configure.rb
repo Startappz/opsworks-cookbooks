@@ -16,6 +16,7 @@ response = http.request(request)
 keys = response.body
 
 
+
 # Create the Wordpress config file wp-config.php with corresponding values
 node[:deploy].each do |application, deploy|
   Chef::Log.info("Configuring WP app #{application}...")
