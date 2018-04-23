@@ -40,6 +40,7 @@ node[:deploy].each do |application, deploy|
 
       :aws_access_key    => (deploy[:aws][:access_key] rescue nil),
       :aws_secret_key    => (deploy[:aws][:secret_key] rescue nil),
+      :aws_redis_host    => (deploy[:aws][:redis_host] rescue nil),
 
       :domain     => (deploy[:domains].first))
   end
