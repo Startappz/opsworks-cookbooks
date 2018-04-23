@@ -1,23 +1,6 @@
 # AWS OpsWorks Recipe for Wordpress to be executed during the Configure lifecycle phase
-# - Creates the config file wp-config.php with MySQL data.
-# - Creates a Cronjob.
-# - Imports a database backup if it exists.
 
-require 'uri'
-require 'net/http'
-require 'net/https'
-
-uri = URI.parse("https://api.wordpress.org/secret-key/1.1/salt/")
-http = Net::HTTP.new(uri.host, uri.port)
-http.use_ssl = true
-http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-request = Net::HTTP::Get.new(uri.request_uri)
-response = http.request(request)
-keys = response.body
-
-
-
-# Create the Wordpress config file wp-config.php with corresponding values
+# Create the Wordpress config file keys.php with corresponding values
 node[:deploy].each do |application, deploy|
   Chef::Log.info("Configuring WP app #{application}...")
 
@@ -28,19 +11,33 @@ node[:deploy].each do |application, deploy|
 
   deploy = node[:deploy][application]
 
-  #template "#{deploy[:deploy_to]}/current/wp-config.php" do
-  template "#{deploy[:deploy_to]}/shared/config/wp-config.php" do
-    source "wp-config.php.erb"
+  template "#{deploy[:deploy_to]}/shared/config/keys.php" do
+    source "keys.php.erb"
     mode 0660
     group deploy[:group]
     owner deploy[:user]
 
     variables(
+      # database
       :database   => (deploy[:database][:database] rescue nil),
       :user       => (deploy[:database][:username] rescue nil),
       :password   => (deploy[:database][:password] rescue nil),
       :host       => (deploy[:database][:host] rescue nil),
       :keys       => (keys rescue nil),
+
+      # authentication
+      :auth_key         => (deploy[:authentication][:auth_key] rescue nil),
+      :secret_auth_key  => (deploy[:authentication][:secret_auth_key] rescue nil),
+      :logged_in_key    => (deploy[:authentication][:logged_in_key] rescue nil),
+      :nonce_key        => (deploy[:authentication][:nonce_key] rescue nil),
+      :auth_salt        => (deploy[:authentication][:auth_salt] rescue nil),
+      :secure_auth_salt => (deploy[:authentication][:secure_auth_salt] rescue nil),
+      :logged_in_salt   => (deploy[:authentication][:logged_in_salt] rescue nil),
+      :nonce_salt       => (deploy[:authentication][:nonce_salt] rescue nil),
+
+      :aws_access_key    => (deploy[:aws][:access_key] rescue nil),
+      :aws_secret_key    => (deploy[:aws][:secret_key] rescue nil),
+
       :domain     => (deploy[:domains].first))
   end
 end
